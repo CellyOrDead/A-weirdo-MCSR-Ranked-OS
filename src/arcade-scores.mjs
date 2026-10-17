@@ -34,7 +34,7 @@ export function arcadeRecordMarkup(gameId, legacyBestKey, language = "pt") {
 
 export function mountArcadeScoreEntry(root, { gameId, legacyBestKey, language = "pt" }) {
   const entry = root.querySelector("[data-arcade-score-entry]");
-  if (!entry) return { show() {}, reset() {} };
+  if (!entry) return { show() {}, reset() {}, debugSave() { return false; } };
   const t = copy[language] || copy.pt;
   const slots = [...entry.querySelectorAll("[data-score-letter]")];
   const submit = entry.querySelector("[data-score-submit]");
@@ -64,6 +64,16 @@ export function mountArcadeScoreEntry(root, { gameId, legacyBestKey, language = 
     slots[0]?.focus({ preventScroll: true });
   };
   const reset = () => { entry.hidden = true; saved = false; };
+  const debugSave = (score, initials = "DBG") => {
+    const value = Math.max(0, Math.floor(Number(score) || 0));
+    if (!value) return false;
+    const name = String(initials || "DBG").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 4).padEnd(4, "A");
+    const records = arcadeRecords(gameId, legacyBestKey);
+    records.push({ initials: name, score: value, at: Date.now() });
+    try { localStorage.setItem(`${gameId}-arcade-records`, JSON.stringify(cleanRecords(records))); } catch { return false; }
+    recordsView();
+    return true;
+  };
   slots.forEach((button, index) => button.addEventListener("click", () => {
     selected = index;
     letters[index] = alphabet[(alphabet.indexOf(letters[index]) + 1) % alphabet.length];
@@ -110,7 +120,7 @@ export function mountArcadeScoreEntry(root, { gameId, legacyBestKey, language = 
     recordsView();
   });
   paint();
-  return { show, reset };
+  return { show, reset, debugSave };
 }
 
 export function arcadeScoreEntryMarkup(gameId, legacyBestKey, language = "pt") {

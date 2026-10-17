@@ -10,13 +10,27 @@ const text = {
 const bossPalettes = [
   { wash: "#63294d", accent: "#ff9dce", glow: "#ff6fb8", star: "#ffd6ee", secondary: "#bd83ff", grid: "#f6a8d8" },
   { wash: "#682a31", accent: "#ff9a76", glow: "#ff5a58", star: "#ffe0bf", secondary: "#ffd06c", grid: "#ffad8b" },
-  { wash: "#282a68", accent: "#a7a4ff", glow: "#786bff", star: "#d9e7ff", secondary: "#71d8ff", grid: "#a3aaff" }
+  { wash: "#282a68", accent: "#a7a4ff", glow: "#786bff", star: "#d9e7ff", secondary: "#71d8ff", grid: "#a3aaff" },
+  { wash: "#174a45", accent: "#73f0bc", glow: "#27d99b", star: "#d9fff0", secondary: "#80f3e0", grid: "#79eac5" },
+  { wash: "#42245e", accent: "#d29aff", glow: "#a14dff", star: "#f4dcff", secondary: "#ff9be8", grid: "#d29aff" },
+  { wash: "#55451b", accent: "#ffe17a", glow: "#ffb52e", star: "#fff7c2", secondary: "#ff8b5c", grid: "#f5d86f" }
 ];
 
+const difficultySettings = {
+  normal: { label: ["Normal", "Normal", "Normal"], bullet: 1, cadence: 1, health: 1, waves: 1 },
+  hard: { label: ["Difícil", "Hard", "Difícil"], bullet: 1.2, cadence: .84, health: 1.22, waves: .86 },
+  impossible: { label: ["Impossível", "Impossible", "Imposible"], bullet: 1.42, cadence: .68, health: 1.5, waves: .72 }
+};
+const bossCatalog = {
+  pt: { names: ["Astra · Dama das Rosas", "Kuro · Cometa Carmesim", "Mira · Tecelã Lunar", "Nami · Guardiã das Marés", "Nyx · Oráculo do Vazio", "Helios · Coração Solar"], attacks: ["Espirais de pétalas · leques", "Chuva carmesim · rajadas perseguidoras", "Órbita lunar · anéis e espirais", "Correntes de bolhas · ondas cruzadas", "Fendas e minas · zonas de perigo", "Explosões solares · leques ardentes"] },
+  en: { names: ["Astra · Rose Lady", "Kuro · Crimson Comet", "Mira · Lunar Weaver", "Nami · Tidekeeper", "Nyx · Void Oracle", "Helios · Solar Heart"], attacks: ["Petal spirals · opening fans", "Crimson rain · seeking volleys", "Lunar orbit · rings and spirals", "Bubble currents · crossing waves", "Rifts and mines · danger zones", "Solar bursts · burning fans"] },
+  es: { names: ["Astra · Dama de las Rosas", "Kuro · Cometa Carmesí", "Mira · Tejedora Lunar", "Nami · Guardiana de Mareas", "Nyx · Oráculo del Vacío", "Helios · Corazón Solar"], attacks: ["Espirales de pétalos · abanicos", "Lluvia carmesí · ráfagas perseguidoras", "Órbita lunar · anillos y espirales", "Corrientes de burbujas · ondas cruzadas", "Grietas y minas · zonas peligrosas", "Explosiones solares · abanicos ardientes"] }
+};
+
 const perkDetails = {
-  pt: ["Dispare três projéteis em leque.", "Seus tiros atravessam mais inimigos.", "Dano dos tiros +45%.", "Velocidade de movimento +18%.", "Foco fica mais lento e amplia o tiro.", "Recupere uma vida, até o limite de quatro.", "Ganhe uma bomba e aumente o limite de cargas.", "Atraia essências de XP de mais longe.", "Bombas causam dano dobrado aos chefes."],
-  en: ["Fire three projectiles in a spread.", "Shots pierce more enemies.", "Shot damage +45%.", "Move speed +18%.", "Focus slows you further and widens your shot.", "Restore one life, up to the four-life cap.", "Gain a bomb and raise your charge cap.", "Collect XP essences from farther away.", "Bombs deal double damage to bosses."],
-  es: ["Dispara tres proyectiles en abanico.", "Tus disparos atraviesan más enemigos.", "Daño de disparo +45%.", "Velocidad de movimiento +18%.", "El foco ralentiza más y amplía el disparo.", "Recupera una vida, hasta un máximo de cuatro.", "Obtén una bomba y aumenta el límite de cargas.", "Atrae esencias de XP desde más lejos.", "Las bombas duplican el daño a los jefes."]
+  pt: ["Dispare três projéteis em leque.", "Seus tiros atravessam mais inimigos.", "Dano dos tiros +32% por escolha.", "Velocidade de movimento +12% por escolha.", "Foco amplia a rajada em até 3 projéteis extras.", "Recupere uma vida, até o limite de cinco.", "Ganhe uma bomba e aumente o limite de cargas.", "Atraia essências de XP de mais longe.", "Bombas causam dano dobrado aos chefes."],
+  en: ["Fire three projectiles in a spread.", "Shots pierce more enemies.", "Shot damage +32% per pick.", "Move speed +12% per pick.", "Focus adds up to 3 extra shots.", "Restore one life, up to a five-life cap.", "Gain a bomb and raise your charge cap.", "Collect XP essences from farther away.", "Bombs deal double damage to bosses."],
+  es: ["Dispara tres proyectiles en abanico.", "Tus disparos atraviesan más enemigos.", "Daño de disparo +32% por elección.", "Velocidad de movimiento +12% por elección.", "El foco añade hasta 3 disparos.", "Recupera una vida, hasta un máximo de cinco.", "Obtén una bomba y aumenta el límite de cargas.", "Atrae esencias de XP desde más lejos.", "Las bombas duplican el daño a los jefes."]
 };
 
 const rareCards = [
@@ -25,7 +39,10 @@ const rareCards = [
   { id: "overdrive", icon: "⚡", name: ["Sobrecarga", "Overdrive", "Sobrecarga"], description: ["Dispare 25% mais rápido.", "Fire 25% faster.", "Dispara un 25% más rápido."] },
   { id: "nova", icon: "☼", name: ["Nova", "Nova", "Nova"], description: ["Seus tiros explodem e ferem inimigos próximos.", "Your shots burst and damage nearby enemies.", "Tus disparos estallan y dañan enemigos cercanos."] },
   { id: "bombardier", icon: "✹", name: ["Bombardeio", "Bombardment", "Bombardeo"], description: ["Bombas causam 70% mais dano.", "Bombs deal 70% more damage.", "Las bombas infligen un 70% más de daño."] },
-  { id: "aegis", icon: "⬡", name: ["Égide Estelar", "Star Aegis", "Égida estelar"], description: ["A cada 14s, bloqueia um impacto sem perder vida.", "Every 14s, block one hit without losing a life.", "Cada 14s, bloquea un impacto sin perder vida."] }
+  { id: "aegis", icon: "⬡", name: ["Égide Estelar", "Star Aegis", "Égida estelar"], description: ["A cada 14s, bloqueia um impacto sem perder vida.", "Every 14s, block one hit without losing a life.", "Cada 14s, bloquea un impacto sin perder vida."] },  { id: "rift-core", icon: "◈", name: ["Núcleo de Fenda", "Rift Core", "Núcleo de Grieta"], description: ["Tiros atravessam +2 inimigos.", "Shots pierce 2 additional enemies.", "Los disparos atraviesan 2 enemigos más."] },
+  { id: "scavenger", icon: "✧", name: ["Ímã de Almas", "Soul Magnet", "Imán de Almas"], description: ["Essências dão 50% mais XP e são atraídas de mais longe.", "Essences give 50% more XP and are pulled from farther away.", "Las esencias dan 50% más XP y se atraen desde más lejos."] },
+  { id: "afterburn", icon: "➤", name: ["Pós-combustão", "Afterburn", "Postcombustión"], description: ["Mover aumenta a velocidade de tiro em 15%.", "Moving increases fire rate by 15%.", "Moverse aumenta la cadencia de disparo un 15%."] },
+  { id: "phoenix", icon: "♨", name: ["Pacto Fênix", "Phoenix Pact", "Pacto Fénix"], description: ["Recupere uma vida ao derrotar cada chefe.", "Restore one life after defeating each boss.", "Recupera una vida al derrotar cada jefe."] }
 ];
 
 const buildText = {
@@ -86,14 +103,14 @@ export function danmakuMarkup(language = "pt") {
   return `<section class="danmaku-game" aria-label="${t.name}">
     <header class="danmaku-heading"><div><span class="danmaku-kicker">ARCADE · 01 / 02</span><h2>${t.name}</h2><p>${t.tagline}</p></div><div class="danmaku-highscore"><small>${t.best}</small><strong data-dm-best>${readBest().toLocaleString()}</strong></div></header>
     <div class="danmaku-layout"><div class="danmaku-playfield"><canvas data-dm-canvas aria-label="Vertical danmaku game"></canvas>
-      <div class="danmaku-hud" data-dm-hud hidden><div class="danmaku-run-stats"><small>${t.stage} / <b data-dm-stage>1</b> · <span data-dm-phase>${t.wave}</span></small><b>${t.score} <span data-dm-score>0</span></b></div><div class="danmaku-life-stat"><small>${t.lives}</small><b class="danmaku-lives" data-dm-lives>4</b></div><div class="danmaku-xp"><small>${t.xp} <span data-dm-xp>0/6</span></small><i><b data-dm-xpbar></b></i></div><span class="danmaku-bomb-count" data-dm-bombs aria-label="${t.bomb}: X">X ×1</span><button type="button" data-dm-pause aria-label="${t.pause}">Ⅱ</button><div class="danmaku-boss-hud"><small data-dm-boss-name>${t.boss}</small><i><b data-dm-boss-hp></b></i></div></div>
-      <div class="danmaku-overlay" data-dm-start><div class="danmaku-card"><span class="danmaku-kicker">DANMAKU PROTOCOL</span><h3>${t.name}</h3><p>${t.tagline}</p><div class="danmaku-boss-roster">${t.names.map((name, i) => `<span><i>0${i + 1}</i>${name}</span>`).join("")}</div><section class="danmaku-skin-section"><header><strong>${(skinUiText[language] || skinUiText.pt).title}</strong><small data-dm-skin-count></small></header><div class="danmaku-skin-grid" data-dm-skin-list></div></section><button type="button" data-dm-start-button>${t.start} <span>↗</span></button><small>${t.controls}</small></div></div>
+      <div class="danmaku-hud" data-dm-hud hidden><div class="danmaku-run-stats"><small>${t.stage} / <b data-dm-stage>1</b> · <span data-dm-phase>${t.wave}</span> · ${language === "pt" ? "AMEAÇA" : language === "es" ? "PELIGRO" : "DANGER"} <b data-dm-threat>1.0×</b></small><b>${t.score} <span data-dm-score>0</span></b></div><div class="danmaku-life-stat"><small>${t.lives}</small><b class="danmaku-lives" data-dm-lives>4</b></div><div class="danmaku-xp"><small>${t.xp} <span data-dm-xp>0/6</span></small><i><b data-dm-xpbar></b></i></div><span class="danmaku-bomb-count" data-dm-bombs aria-label="${t.bomb}: X">X ×1</span><button type="button" data-dm-pause aria-label="${t.pause}">Ⅱ</button><div class="danmaku-boss-hud"><small data-dm-boss-name>${t.boss}</small><i><b data-dm-boss-hp></b></i></div></div>
+      <div class="danmaku-overlay" data-dm-start><div class="danmaku-card"><span class="danmaku-kicker">DANMAKU PROTOCOL</span><h3>${t.name}</h3><p>${t.tagline}</p><div class="danmaku-difficulty" role="group" aria-label="Difficulty">${Object.entries(difficultySettings).map(([id, setting]) => `<button type="button" data-dm-difficulty="${id}" aria-pressed="${id === "normal"}" class="${id === "normal" ? "is-selected" : ""}">${setting.label[language === "en" ? 1 : language === "es" ? 2 : 0]}</button>`).join("")}</div><div class="danmaku-boss-roster">${(bossCatalog[language] || bossCatalog.pt).names.map((name, i) => `<span><i>0${i + 1}</i>${name}</span>`).join("")}</div><section class="danmaku-skin-section"><header><strong>${(skinUiText[language] || skinUiText.pt).title}</strong><small data-dm-skin-count></small></header><div class="danmaku-skin-grid" data-dm-skin-list></div></section><button type="button" data-dm-start-button>${t.start} <span>↗</span></button><small>${t.controls}</small></div></div>
       <div class="danmaku-overlay" data-dm-pause-screen hidden><div class="danmaku-card"><span class="danmaku-kicker">${t.pause}</span><h3>${t.pause}</h3><p>${(qolText[language] || qolText.pt).pauseHint}</p><button type="button" data-dm-resume>${t.resume}</button></div></div>
       <div class="danmaku-overlay" data-dm-perks hidden><div class="danmaku-card danmaku-perk-card"><span class="danmaku-kicker">ROGUE BUILD</span><h3>${t.choose}</h3><p>${t.chooseHint}</p><div class="danmaku-perk-list" data-dm-perk-list></div><small>${(qolText[language] || qolText.pt).perkHint}</small></div></div>
       <div class="danmaku-overlay" data-dm-chest hidden><div class="danmaku-card danmaku-chest-card"><span class="danmaku-kicker">${(buildText[language] || buildText.pt).chest}</span><h3 data-dm-chest-title></h3><p>${(buildText[language] || buildText.pt).chestHint}</p><div class="danmaku-chest-offer" data-dm-chest-offer></div><div class="danmaku-chest-actions" data-dm-chest-actions></div></div></div>
       <div class="danmaku-overlay" data-dm-over hidden><div class="danmaku-card"><span class="danmaku-kicker">${t.over}</span><h3>${t.over}</h3><div class="danmaku-result"><span>${t.score}<b data-dm-final>0</b></span><span>${t.best}<b data-dm-final-best>0</b></span></div>${arcadeScoreEntryMarkup("danmaku", "danmaku-best", language)}<button type="button" data-dm-retry>${t.retry} <span>↗</span></button><button type="button" class="danmaku-menu" data-dm-menu>${t.menu}</button></div></div>
-      <div class="danmaku-toast" data-dm-toast hidden>${t.clear}</div><div class="danmaku-skin-toast" data-dm-skin-toast role="status" hidden></div>
-    </div><aside class="danmaku-aside"><span class="danmaku-kicker">BOSS INDEX</span>${t.names.map((name, i) => `<article><i>0${i + 1}</i><div><strong>${name}</strong><small>${t.attacks[i]}</small></div></article>`).join("")}<section class="danmaku-build-panel"><header><strong>${(buildText[language] || buildText.pt).title}</strong><small data-dm-build-count>0/3 ${(buildText[language] || buildText.pt).rareCount}</small></header><div data-dm-build-cards></div><div data-dm-build-combos></div></section><div class="danmaku-aside-note"><b>4 × 1</b><span>${language === "pt" ? "Um impacto consome uma vida. Segure Shift para focar e mover com precisão." : language === "es" ? "Un impacto consume una vida. Mantén Shift para enfocar y moverte con precisión." : "Each hit costs one life. Hold Shift to focus and move precisely."}</span></div></aside></div>
+      <div class="danmaku-toast" data-dm-toast hidden>${t.clear}</div><div class="danmaku-skin-toast" data-dm-skin-toast role="status" hidden></div><div class="danmaku-debug-panel" data-dm-debug hidden><header><strong>DEBUG MODE</strong><button type="button" data-debug-close aria-label="Close debug menu">×</button></header><pre data-dm-debug-data></pre><div class="danmaku-debug-controls"><label>Skin<select data-debug-skin>${shipSkins.map((skin) => `<option value="${skin.id}">${skin.names[Math.max(0, ["pt", "en", "es"].indexOf(language))]}</option>`).join("")}</select></label><button type="button" data-debug-action="unlock-skin">Unlock + equip skin</button><label>Score / leaderboard<input type="number" min="1" step="1" value="100000" data-debug-score></label><label>Initials<input type="text" maxlength="4" value="DBG" data-debug-initials></label><button type="button" data-debug-action="save-score">Insert leaderboard score</button><label>Perk<select data-debug-perk>${t.perks.map((perk, index) => `<option value="${index}">${perk}</option>`).join("")}</select></label><button type="button" data-debug-action="add-perk">Apply perk</button><label>Chest ability<select data-debug-rare>${rareCards.map((card) => `<option value="${card.id}">${card.name[Math.max(0, ["pt", "en", "es"].indexOf(language))]}</option>`).join("")}</select></label><button type="button" data-debug-action="add-rare">Add ability (replace oldest if full)</button><label>Enemy / boss<select data-debug-enemy><option value="regular-0">Basic enemy</option><option value="regular-1">Fan shooter</option><option value="regular-2">Elite (chest carrier)</option><option value="regular-3">Swift enemy</option><option value="regular-4">Turret</option><option value="midboss">Stage elite</option>${(bossCatalog[language] || bossCatalog.pt).names.map((name, index) => `<option value="boss-${index}">${name}</option>`).join("")}</select></label><button type="button" data-debug-action="spawn">Spawn selection</button><label>Difficulty<select data-debug-difficulty>${Object.entries(difficultySettings).map(([id, value]) => `<option value="${id}">${value.label[language === "en" ? 1 : language === "es" ? 2 : 0]}</option>`).join("")}</select></label><button type="button" data-debug-action="set-difficulty">Apply difficulty</button><div class="danmaku-debug-utilities"><button type="button" data-debug-action="heal">Restore lives</button><button type="button" data-debug-action="bombs">Max bombs</button><button type="button" data-debug-action="clear">Clear enemy bullets</button><button type="button" data-debug-action="invulnerable">Toggle invulnerability</button></div><small data-debug-status>Debug changes are local to this run. Enter the arrow code again to close.</small></div></div>
+    </div><aside class="danmaku-aside"><span class="danmaku-kicker">BOSS INDEX</span>${(bossCatalog[language] || bossCatalog.pt).names.map((name, i) => `<article><i>0${i + 1}</i><div><strong>${name}</strong><small>${(bossCatalog[language] || bossCatalog.pt).attacks[i]}</small></div></article>`).join("")}<section class="danmaku-build-panel"><header><strong>${(buildText[language] || buildText.pt).title}</strong><small data-dm-build-count>0/3 ${(buildText[language] || buildText.pt).rareCount}</small></header><div data-dm-build-cards></div><div data-dm-build-combos></div></section><div class="danmaku-aside-note"><b>4 × 1</b><span>${language === "pt" ? "Um impacto consome uma vida. Segure Shift para focar e mover com precisão." : language === "es" ? "Un impacto consume una vida. Mantén Shift para enfocar y moverte con precisión." : "Each hit costs one life. Hold Shift to focus and move precisely."}</span></div></aside></div>
     <div class="arcade-control-monitor" data-arcade-monitor aria-hidden="true"><div class="arcade-monitor-title"><i></i><span>${language === "pt" ? "CONTROLE AO VIVO" : language === "es" ? "CONTROL EN VIVO" : "LIVE CONTROLLER"}</span><b>${language === "pt" ? "ENTRADA" : language === "es" ? "ENTRADA" : "INPUT"} <em data-monitor-state>${language === "pt" ? "PARADO" : language === "es" ? "EN ESPERA" : "IDLE"}</em></b></div><div class="arcade-controller"><div class="arcade-stick-deck"><span>MOVE</span><div class="arcade-stick"><i data-monitor-stick></i></div><small>W A S D</small></div><div class="arcade-action-bank"><span>DANMAKU</span><div><i data-monitor-fire>FIRE</i><i data-monitor-dash>FOCUS</i><i data-monitor-bomb>BOMB</i></div><small>SPACE · SHIFT · X</small></div></div></div>
   </section>`;
 }
@@ -114,18 +131,93 @@ export function mountDanmaku(root, language = "pt") {
   const monitor = { root: root.querySelector("[data-arcade-monitor]"), stick: root.querySelector("[data-monitor-stick]"), fire: root.querySelector("[data-monitor-fire]"), focus: root.querySelector("[data-monitor-dash]"), bomb: root.querySelector("[data-monitor-bomb]"), state: root.querySelector("[data-monitor-state]") };
   const ui = {
     start: root.querySelector("[data-dm-start]"), pause: root.querySelector("[data-dm-pause-screen]"),
-    over: root.querySelector("[data-dm-over]"), perks: root.querySelector("[data-dm-perks]"), chest: root.querySelector("[data-dm-chest]"), hud: root.querySelector("[data-dm-hud]"), toast: root.querySelector("[data-dm-toast]")
+    over: root.querySelector("[data-dm-over]"), perks: root.querySelector("[data-dm-perks]"), chest: root.querySelector("[data-dm-chest]"), hud: root.querySelector("[data-dm-hud]"), toast: root.querySelector("[data-dm-toast]"), debug: root.querySelector("[data-dm-debug]"), debugData: root.querySelector("[data-dm-debug-data]")
   };
   const scoreEntry = mountArcadeScoreEntry(root, { gameId: "danmaku", legacyBestKey: "danmaku-best", language });
   const hud = {
     score: root.querySelector("[data-dm-score]"), bossName: root.querySelector("[data-dm-boss-name]"), bossHp: root.querySelector("[data-dm-boss-hp]"),
-    stage: root.querySelector("[data-dm-stage]"), phase: root.querySelector("[data-dm-phase]"), xp: root.querySelector("[data-dm-xp]"), xpBar: root.querySelector("[data-dm-xpbar]"),
+    stage: root.querySelector("[data-dm-stage]"), phase: root.querySelector("[data-dm-phase]"), xp: root.querySelector("[data-dm-xp]"), xpBar: root.querySelector("[data-dm-xpbar]"), threat: root.querySelector("[data-dm-threat]"),
     best: root.querySelector("[data-dm-best]")
   };
-  let W = 360, H = 680, dpr = 1, frame = 0, last = 0, mode = "menu", elapsed = 0, stage = 1, stageTime = 0, phase = "wave", score = 0, lives = 4, invuln = 0, shotClock = 0, enemyClock = 0, bossClear = 0, boss = null, bossIndex = -1, midboss = null, midbossSpawned = false, best = readBest(), focus = false;
+  let W = 360, H = 680, dpr = 1, frame = 0, last = 0, mode = "menu", elapsed = 0, stage = 1, stageTime = 0, phase = "wave", score = 0, lives = 4, invuln = 0, shotClock = 0, enemyClock = 0, bossClear = 0, boss = null, bossIndex = -1, midboss = null, midbossSpawned = false, best = readBest(), focus = false, difficulty = "normal";
   let xp = 0, nextXp = 12, level = 1, bombs = 1, maxBombs = 2, shotDamage = 1, shotSpread = 0, shotPierce = 0, moveBonus = 1, focusBonus = 0, magnet = 36, bombPower = 1, aegisCooldown = 0, volleyCount = 0, pendingChestCard = null, chestSpinInterval = null, selectedPerkIndex = 0, chestActionIndex = 0, lastHudUpdate = 0, backgroundGradient = null, bombFlash = 0, resumeAfterKeybind = false, bossTint = 0;
   let perkCounts = Array(9).fill(0), selectedPerks = [], rareBuild = [];
   let runLifeLosses = 0, runBossesDefeated = 0, bossLifeLosses = 0, heavyKills = 0;
+  const debugCode = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowright", "arrowleft", "arrowright", "arrowleft"];
+  let debugInput = [], debugEnabled = false, debugFrameCount = 0, debugLastSample = 0, debugFps = 0, debugWasPlaying = false, debugInvulnerable = false;
+  function setDebugOpen(open) {
+    if (open === debugEnabled) return;
+    if (open) {
+      debugWasPlaying = mode === "playing";
+      if (debugWasPlaying) mode = "pause";
+    } else if (debugWasPlaying && mode === "pause") mode = "playing";
+    debugEnabled = open; ui.debug.hidden = !open; debugInput = [];
+    debugFrameCount = 0; debugLastSample = performance.now();
+  }
+  function debugStatus(message) { root.querySelector("[data-debug-status]").textContent = message; }
+  function ensureDebugRun() {
+    if (mode === "menu" || mode === "over") { start(); mode = "pause"; debugWasPlaying = true; }
+    else if (mode === "playing") { mode = "pause"; debugWasPlaying = true; }
+  }
+  function spawnDebugEnemy(kind) {
+    const scale = threatScale();
+    const stats = [
+      { r: 10, hp: 2, speed: 62 }, { r: 10, hp: 3, speed: 68 }, { r: 12, hp: 5, speed: 48 },
+      { r: 8, hp: 2, speed: 112 }, { r: 11, hp: 4, speed: 42 }
+    ][kind];
+    const hp = stats.hp + Math.floor((stage - 1) / 2) + Math.floor((scale - 1) * 2);
+    const x = W * (.2 + Math.random() * .6);
+    enemies.push({ x, y: 45, baseX: x, r: stats.r, hp, maxHp: hp, speed: stats.speed * (1 + (scale - 1) * .16), phase: Math.random() * 6, shotClock: .4, kind, seed: Math.random() * Math.PI * 2, fireCount: 0 });
+  }
+  function runDebugAction(action) {
+    if (action === "unlock-skin") {
+      const id = root.querySelector("[data-debug-skin]").value;
+      if (!skinById.has(id)) return;
+      unlockedSkinIds.add(id); saveUnlockedSkins(unlockedSkinIds); equipSkin(id); player.skin = id;
+      debugStatus(`Unlocked and equipped ${skinById.get(id).names[Math.max(0, ["pt", "en", "es"].indexOf(language))]}.`); return;
+    }
+    if (action === "save-score") {
+      const value = Math.max(0, Math.floor(Number(root.querySelector("[data-debug-score]").value) || 0));
+      const initials = root.querySelector("[data-debug-initials]").value;
+      if (!scoreEntry.debugSave(value, initials)) { debugStatus("Enter a score above zero; storage may be unavailable."); return; }
+      best = Math.max(best, value); writeBest(best); updateHud();
+      debugStatus(`Saved ${Math.floor(value).toLocaleString()} to the local arcade leaderboard.`); return;
+    }
+    if (action === "set-difficulty") {
+      difficulty = root.querySelector("[data-debug-difficulty]").value;
+      root.querySelectorAll("[data-dm-difficulty]").forEach((button) => { const selected = button.dataset.dmDifficulty === difficulty; button.setAttribute("aria-pressed", String(selected)); button.classList.toggle("is-selected", selected); });
+      updateHud(); debugStatus(`Difficulty set to ${difficulty}.`); return;
+    }
+    if (["add-perk", "add-rare", "spawn", "heal", "bombs", "clear", "invulnerable"].includes(action)) ensureDebugRun();
+    if (action === "add-perk") {
+      applyPerk(Number(root.querySelector("[data-debug-perk]").value), true);
+      debugStatus(`Applied: ${t.perks[Number(root.querySelector("[data-debug-perk]").value)]}.`);
+    } else if (action === "add-rare") {
+      const id = root.querySelector("[data-debug-rare]").value;
+      if (rareBuild.includes(id)) { debugStatus("That ability is already in the build."); return; }
+      if (rareBuild.length >= 3) rareBuild.shift();
+      rareBuild.push(id); renderBuild(); updateHud();
+      const locale = Math.max(0, ["pt", "en", "es"].indexOf(language));
+      debugStatus(`Added: ${rareCards.find((card) => card.id === id).name[locale]}.`);
+    } else if (action === "spawn") {
+      const selected = root.querySelector("[data-debug-enemy]").value;
+      if (selected.startsWith("regular-")) spawnDebugEnemy(Number(selected.slice(8)));
+      else if (selected === "midboss") { boss = null; enemies = []; bullets = []; stageTime = 20; spawnMidboss(); midbossSpawned = true; }
+      else if (selected.startsWith("boss-")) { boss = null; midboss = null; enemies = []; bullets = []; spawnBoss(Number(selected.slice(5))); }
+      updateHud(); debugStatus(`Spawned ${root.querySelector("[data-debug-enemy] option:checked").textContent}.`);
+    } else if (action === "heal") { lives = 5; updateHud(); debugStatus("Lives restored to 5."); }
+    else if (action === "bombs") { maxBombs = 5; bombs = maxBombs; updateHud(); debugStatus("Bomb charges filled."); }
+    else if (action === "clear") { bullets = []; debugStatus("Enemy bullets cleared."); }
+    else if (action === "invulnerable") { debugInvulnerable = !debugInvulnerable; debugStatus(`Invulnerability ${debugInvulnerable ? "enabled" : "disabled"}.`); }
+  }
+  function threatScale() {
+    const progressionScore = Math.max(0, score, best);
+    return 1 + Math.log1p(progressionScore / 5000) * .13 + Math.log1p(Math.max(0, stage - 1)) * .1;
+  }
+  function scoreMultiplier() {
+    const selectedMultiplier = difficulty === "hard" ? 1.35 : difficulty === "impossible" ? 1.8 : 1;
+    return selectedMultiplier * (1 + (threatScale() - 1) * .12);
+  }
   const keys = new Set();
   const monitorKeys = new Set();
   let player = { x: 180, y: 570, r: 3.4, vx: 0, vy: 0, skin: selectedSkinId };
@@ -310,70 +402,80 @@ export function mountDanmaku(root, language = "pt") {
     if (!force && now - lastHudUpdate < 100) return;
     lastHudUpdate = now;
     checkSkinUnlocks(Math.floor(score));
-    hud.score.textContent = Math.floor(score).toLocaleString();
+    const shownScore = Math.floor(score * scoreMultiplier());
+    hud.threat.textContent = `${threatScale().toFixed(1)}×`;
+    hud.score.textContent = shownScore.toLocaleString();
     const lifeStatus = root.querySelector("[data-dm-lives]");
     lifeStatus.textContent = String(Math.max(0, lives));
     lifeStatus.setAttribute("aria-label", `${t.lives}: ${Math.max(0, lives)}`);
-    root.querySelector("[data-dm-lives]").textContent = `${"♥ ".repeat(Math.max(0, lives))}${"♡ ".repeat(4 - Math.max(0, lives))}`.trim();
+    root.querySelector("[data-dm-lives]").textContent = `${"♥ ".repeat(Math.max(0, lives))}${"♡ ".repeat(Math.max(0, 5 - Math.max(0, lives)))}`.trim();
     const target = boss || midboss;
-    hud.bossName.textContent = boss ? t.names[bossIndex] : midboss ? t.midboss : phase === "wave" ? t.wave : t.stageclear;
+    hud.bossName.textContent = boss ? (bossCatalog[language] || bossCatalog.pt).names[bossIndex] : midboss ? t.midboss : phase === "wave" ? t.wave : t.stageclear;
     hud.bossHp.style.width = target ? `${Math.max(0, target.hp / target.maxHp * 100)}%` : "0%";
     hud.stage.textContent = String(stage);
     hud.phase.textContent = boss ? t.boss : midboss ? t.midboss : t.wave;
     hud.xp.textContent = `${Math.floor(xp)}/${nextXp}`;
     hud.xpBar.style.width = `${Math.min(100, xp / nextXp * 100)}%`;
     root.querySelector("[data-dm-bombs]").textContent = `X ×${bombs}`;
-    hud.best.textContent = Math.max(best, Math.floor(score)).toLocaleString();
+    hud.best.textContent = Math.max(best, shownScore).toLocaleString();
   }
-  function spawnBoss() {
-    const options = [0, 1, 2].filter((i) => i !== bossIndex);
-    bossIndex = options[Math.floor(Math.random() * options.length)];
+  function spawnBoss(forcedIndex = -1) {
+    const options = bossPalettes.map((_, i) => i).filter((i) => i !== bossIndex);
+    bossIndex = forcedIndex >= 0 && forcedIndex < bossPalettes.length ? forcedIndex : options[Math.floor(Math.random() * options.length)];
     const palette = bossPalettes[bossIndex];
     root.dataset.bossTheme = String(bossIndex);
     root.style.setProperty("--dm-boss-accent", palette.accent);
     root.style.setProperty("--dm-boss-glow", palette.glow);
     root.style.setProperty("--dm-boss-secondary", palette.secondary);
     bossLifeLosses = 0;
-    boss = { x: W / 2, y: 90, r: 23, hp: 235 + stage * 44, maxHp: 235 + stage * 44, angle: Math.random() * Math.PI * 2, attackIndex: -1, attackTime: 0, attackClock: 0, shotClock: 0, rest: 1.25, attacking: false };
+    const scale = threatScale();
+    const hp = (235 + stage * 44) * difficultySettings[difficulty].health * (1 + (scale - 1) * .34);
+    boss = { x: W / 2, y: 90, r: 23, hp, maxHp: hp, angle: Math.random() * Math.PI * 2, attackIndex: -1, attackTime: 0, attackClock: 0, shotClock: 0, rest: 1.25, attacking: false, location: Math.floor(Math.random() * 5), attackDeck: Array.from({ length: 5 }, (_, i) => i).sort(() => Math.random() - .5) };
     phase = "boss";
     sound("boss");
   }
   function spawnEnemyWave() {
-    const count = Math.min(5, 3 + Math.floor(stage / 2));
+    const count = Math.min(9, 3 + Math.floor(stage / 2) + Math.floor((threatScale() - 1) * 2.4));
     const center = W / 2 + (Math.random() - .5) * W * .45;
     for (let i = 0; i < count; i += 1) {
       const offset = (i - (count - 1) / 2) * Math.min(46, W / (count + 1));
       const roll = Math.random();
       const kind = roll < .07 ? 2 : roll < .22 ? 3 : roll < .38 ? 4 : Math.floor(Math.random() * 2);
-      const hp = 2 + Math.floor((stage - 1) / 2) + (kind === 2 ? 3 : kind === 4 ? 2 : 0);
+      const scale = threatScale();
+      const hp = 2 + Math.floor((stage - 1) / 2) + Math.floor((scale - 1) * 2) + (kind === 2 ? 3 : kind === 4 ? 2 : 0);
       const baseX = Math.max(18, Math.min(W - 18, center + offset));
-      enemies.push({ x: baseX, y: -20 - Math.abs(i - (count - 1) / 2) * 18, baseX, r: kind === 2 ? 12 : kind === 3 ? 8 : kind === 4 ? 11 : 10 + (i % 3), hp, maxHp: hp, speed: (kind === 3 ? 112 : kind === 4 ? 42 : kind === 2 ? 48 : 62) + stage * (kind === 3 ? 3 : 5) + (i % 2) * 14, phase: Math.random() * 6, shotClock: kind === 2 ? .8 + Math.random() * .7 : kind === 4 ? 1 + Math.random() * .5 : 1.2 + Math.random() * 1.8, kind, seed: Math.random() * Math.PI * 2, fireCount: 0 });
+      enemies.push({ x: baseX, y: -20 - Math.abs(i - (count - 1) / 2) * 18, baseX, r: kind === 2 ? 12 : kind === 3 ? 8 : kind === 4 ? 11 : 10 + (i % 3), hp, maxHp: hp, speed: ((kind === 3 ? 112 : kind === 4 ? 42 : kind === 2 ? 48 : 62) + stage * (kind === 3 ? 3 : 5) + (i % 2) * 14) * (1 + (scale - 1) * .16), phase: Math.random() * 6, shotClock: kind === 2 ? .8 + Math.random() * .7 : kind === 4 ? 1 + Math.random() * .5 : 1.2 + Math.random() * 1.8, kind, seed: Math.random() * Math.PI * 2, fireCount: 0 });
     }
   }
   function spawnMidboss() {
-    midboss = { x: W / 2, y: 105, r: 19, hp: 48 + stage * 12, maxHp: 48 + stage * 12, timer: 0, phase: 0 };
+    const hp = (48 + stage * 12) * (1 + (threatScale() - 1) * .28);
+    midboss = { x: W / 2, y: 105, r: 19, hp, maxHp: hp, timer: 0, phase: 0 };
     phase = "midboss"; sound("midboss");
+  }
+  function applyPerk(perk, debug = false) {
+    if (!Number.isInteger(perk) || perk < 0 || perk >= t.perks.length) return;
+    perkCounts[perk] += 1; selectedPerks.push(perk);
+    if (perk === 0) shotSpread = Math.min(3, shotSpread + 1);
+    if (perk === 1) shotPierce += 2;
+    if (perk === 2) shotDamage *= 1.32;
+    if (perk === 3) moveBonus *= 1.12;
+    if (perk === 4) focusBonus = Math.min(3, focusBonus + 1);
+    if (perk === 5) lives = Math.min(5, lives + 1);
+    if (perk === 6) { maxBombs = Math.min(5, maxBombs + 1); bombs = Math.min(maxBombs, bombs + 1); }
+    if (perk === 7) magnet *= 1.55;
+    if (perk === 8) bombPower *= 2;
+    if (!debug) { xp -= nextXp; nextXp = Math.ceil(nextXp * 1.35 + 2); level += 1; ui.perks.hidden = true; mode = "playing"; }
+    renderBuild(); sound("perk"); updateHud();
   }
   function showPerks() {
     mode = "perk"; ui.perks.hidden = false;
     const indexes = [];
-    while (indexes.length < 3) { const i = Math.floor(Math.random() * t.perks.length); if (!indexes.includes(i)) indexes.push(i); }
+    const eligible = t.perks.map((_, i) => i).filter((i) => i !== 5 || lives < 5);
+    while (indexes.length < 3) { const i = eligible[Math.floor(Math.random() * eligible.length)]; if (!indexes.includes(i)) indexes.push(i); }
     const list = root.querySelector("[data-dm-perk-list]");
     selectedPerkIndex = 0; list.innerHTML = indexes.map((i, slot) => `<button type="button" class="danmaku-perk${slot === 0 ? " keyboard-selected" : ""}" data-choice="${slot}" data-perk="${i}"><kbd>${slot + 1}</kbd><span class="danmaku-perk-icon">${["✧", "↟", "✦", "»", "◎", "♥", "X", "◌", "✹"][i]}</span><span><strong>${t.perks[i]}</strong><small>${(perkDetails[language] || perkDetails.pt)[i]}</small></span><b>+</b></button>`).join("");
     list.querySelectorAll("[data-perk]").forEach((button) => button.addEventListener("click", () => {
-      const perk = Number(button.dataset.perk);
-      perkCounts[perk] += 1; selectedPerks.push(perk);
-      if (perk === 0) shotSpread = Math.min(3, shotSpread + 1);
-      if (perk === 1) shotPierce += 2;
-      if (perk === 2) shotDamage *= 1.45;
-      if (perk === 3) moveBonus *= 1.18;
-      if (perk === 4) focusBonus = Math.min(4, focusBonus + 1);
-      if (perk === 5) lives = Math.min(4, lives + 1);
-      if (perk === 6) { maxBombs = Math.min(5, maxBombs + 1); bombs = Math.min(maxBombs, bombs + 1); }
-      if (perk === 7) magnet *= 1.55;
-      if (perk === 8) bombPower *= 2;
-      xp -= nextXp; nextXp = Math.ceil(nextXp * 1.35 + 2); level += 1;
-      renderBuild(); ui.perks.hidden = true; mode = "playing"; sound("perk"); updateHud();
+      applyPerk(Number(button.dataset.perk));
     }, { once: true }));
     list.querySelector('[data-choice="0"]')?.focus({ preventScroll: true });
   }
@@ -398,66 +500,65 @@ export function mountDanmaku(root, language = "pt") {
     array.splice(index, 1); if (!quiet) sound(enemy.kind === 2 ? "killHeavy" : enemy.kind === 3 ? "killSwift" : enemy.kind === 4 ? "killTurret" : "kill", enemy.seed | 0);
   }
   function bullet(x, y, angle, speed, _patternColor, r = 5) {
-    speed *= 1 + (stage - 1) * .065;
+    speed *= threatScale() * difficultySettings[difficulty].bullet;
     const color = r <= 3.5 ? "#ff7180" : r > 4.5 ? "#ff304c" : "#ff4b60";
     bullets.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, color, r, life: 7 });
   }
   function pattern(dt) {
     if (!boss) return;
-    boss.x = W / 2 + Math.sin(elapsed * .55) * W * .27;
+    const lane = boss.location;
+    const laneX = [W * .5, W * .22, W * .78, W * .34, W * .66][lane];
+    const laneY = [82, 112, 112, 68, 68][lane];
+    boss.x += (laneX + Math.sin(elapsed * (.38 + lane * .035)) * W * (lane === 0 ? .24 : .1) - boss.x) * (1 - Math.exp(-dt * 1.6));
+    boss.y += (laneY + Math.sin(elapsed * .8 + lane) * 10 - boss.y) * (1 - Math.exp(-dt * 1.4));
     if (!boss.attacking) {
       boss.rest -= dt;
       if (boss.rest > 0) return;
-      boss.attackIndex = (boss.attackIndex + 1) % 3;
+      boss.attackIndex = (boss.attackIndex + 1) % boss.attackDeck.length;
       boss.attackTime = 0; boss.attackClock = 0; boss.shotClock = .25; boss.attacking = true;
     }
-    boss.attackTime += dt; boss.attackClock += dt; boss.shotClock -= dt;
+    const scale = threatScale();
+    boss.attackTime += dt * scale; boss.attackClock += dt * scale; boss.shotClock -= dt * scale;
     const aimed = Math.atan2(player.y - boss.y, player.x - boss.x);
     const fire = (angle, speed, size = 4) => bullet(boss.x, boss.y + 12, angle, speed, "#ff304c", size);
-
-    // Each boss cycles through a distinct three-card attack deck.
-    if (bossIndex === 0) {
-      if (boss.attackIndex === 0 && boss.shotClock <= 0) {
-        boss.angle += .19;
-        for (let i = 0; i < 5; i += 1) fire(boss.angle + i * Math.PI * 2 / 5, 105, 4.5);
-        boss.shotClock = .16;
-      } else if (boss.attackIndex === 1 && boss.shotClock <= 0) {
-        for (let i = -4; i <= 4; i += 1) fire(aimed + i * .15, 145, 4);
-        boss.shotClock = .72;
-      } else if (boss.attackIndex === 2 && boss.shotClock <= 0) {
-        for (let i = -1; i <= 1; i += 1) fire(aimed + i * .12, 210, 3.5);
-        boss.shotClock = .48;
+    if (boss.shotClock <= 0) {
+      const deck = boss.attackDeck[boss.attackIndex];
+      if (bossIndex === 0) {
+        if (deck === 0) { boss.angle += .2; for (let i = 0; i < 5; i++) fire(boss.angle + i * Math.PI * 2 / 5, 108, 4.5); boss.shotClock = .18; }
+        if (deck === 1) { for (let i = -4; i <= 4; i++) fire(aimed + i * .15, 145, 4); boss.shotClock = .72; }
+        if (deck === 2) { for (let i = -1; i <= 1; i++) fire(aimed + i * .12, 210, 3.5); boss.shotClock = .48; }
+        if (deck === 3) { for (let i = 0; i < 7; i++) fire(Math.PI / 2 + Math.sin(elapsed * 1.4) * .4 + i * .23, 135, 3.5); boss.shotClock = .52; }
+        if (deck === 4) { for (let i = 0; i < 3; i++) fire(aimed + (i - 1) * .34, 175 + i * 14, 5); boss.shotClock = .82; }
+      } else if (bossIndex === 1) {
+        if (deck === 0) { for (let i = -2; i <= 2; i++) fire(aimed + i * .11, 230, 4.5); boss.shotClock = .58; }
+        if (deck === 1) { for (let i = -3; i <= 3; i++) fire(Math.PI / 2 + i * .17 + Math.sin(elapsed * 2) * .08, 160, 3.5); boss.shotClock = .42; }
+        if (deck === 2) { boss.angle += .16; for (let i = 0; i < 12; i++) fire(boss.angle + i * Math.PI / 6, 125, 4); boss.shotClock = .92; }
+        if (deck === 3) { for (let i = -4; i <= 4; i++) fire(aimed + i * .09, 265, 3.2); boss.shotClock = .95; }
+        if (deck === 4) { for (let i = 0; i < 5; i++) fire(Math.PI / 2 + (i - 2) * .3, 95 + i * 16, 4.5); boss.shotClock = .64; }
+      } else if (bossIndex === 2) {
+        if (deck === 0) { boss.angle += .12; for (let ring = 0; ring < 2; ring++) for (let i = 0; i < 10; i++) fire(boss.angle + i * Math.PI / 5 + ring * .15, 105 + ring * 42, 4); boss.shotClock = .82; }
+        if (deck === 1) { const sweep = Math.sin(elapsed * 1.6) * .38; for (let i = -3; i <= 3; i++) fire(Math.PI / 2 + sweep + i * .18, 150, 3.5); boss.shotClock = .34; }
+        if (deck === 2) { boss.angle -= .22; for (let i = 0; i < 4; i++) fire(boss.angle + i * Math.PI / 2, 195, 4); boss.shotClock = .24; }
+        if (deck === 3) { for (let i = 0; i < 8; i++) fire(aimed + (i - 3.5) * .13, 175, 3.4); boss.shotClock = .62; }
+        if (deck === 4) { for (let i = 0; i < 14; i++) fire(boss.angle + i * Math.PI * 2 / 14, 118, 3.5); boss.angle += .17; boss.shotClock = .7; }
+      } else if (bossIndex === 3) {
+        if (deck === 0 || deck === 3) { for (let i = -4; i <= 4; i++) fire(Math.PI / 2 + i * .16 + Math.sin(elapsed * 1.2) * .2, 120 + Math.abs(i) * 8, 4); boss.shotClock = .58; }
+        if (deck === 1 || deck === 4) { for (let i = 0; i < 9; i++) fire(boss.angle + i * Math.PI * 2 / 9, 112, 4); boss.angle += .24; boss.shotClock = .44; }
+        if (deck === 2) { for (let i = -2; i <= 2; i++) fire(aimed + i * .2, 190, 4); boss.shotClock = .7; }
+      } else if (bossIndex === 4) {
+        if (deck === 0 || deck === 4) { for (let i = 0; i < 6; i++) fire(boss.angle + i * Math.PI / 3, 110, 5); boss.angle -= .2; boss.shotClock = .6; }
+        if (deck === 1 || deck === 3) { for (let i = -3; i <= 3; i++) fire(aimed + i * .19, 135, 3); boss.shotClock = .5; }
+        if (deck === 2) { for (let side of [-1, 1]) for (let i = 0; i < 4; i++) fire(Math.PI / 2 + side * (i * .19 + .22), 155, 4); boss.shotClock = .72; }
+      } else {
+        if (deck === 0 || deck === 3) { for (let i = -5; i <= 5; i++) fire(Math.PI / 2 + i * .12, 155, 3.5); boss.shotClock = .55; }
+        if (deck === 1 || deck === 4) { for (let i = 0; i < 10; i++) fire(boss.angle + i * Math.PI / 5, 145, 4); boss.angle += .12; boss.shotClock = .65; }
+        if (deck === 2) { for (let i = -1; i <= 1; i++) fire(aimed + i * .3, 250, 5); boss.shotClock = .9; }
       }
-    } else if (bossIndex === 1) {
-      if (boss.attackIndex === 0 && boss.shotClock <= 0) {
-        for (let i = -2; i <= 2; i += 1) fire(aimed + i * .11, 230, 4.5);
-        boss.shotClock = .58;
-      } else if (boss.attackIndex === 1 && boss.shotClock <= 0) {
-        for (let i = -3; i <= 3; i += 1) fire(Math.PI / 2 + i * .17 + Math.sin(elapsed * 2) * .08, 160, 3.5);
-        boss.shotClock = .42;
-      } else if (boss.attackIndex === 2 && boss.shotClock <= 0) {
-        boss.angle += .16;
-        for (let i = 0; i < 12; i += 1) fire(boss.angle + i * Math.PI / 6, 125, 4);
-        boss.shotClock = .92;
-      }
-    } else if (boss.attackIndex === 0 && boss.shotClock <= 0) {
-      boss.angle += .12;
-      for (let ring = 0; ring < 2; ring += 1) for (let i = 0; i < 10; i += 1) fire(boss.angle + i * Math.PI / 5 + ring * .15, 105 + ring * 42, 4);
-      boss.shotClock = .82;
-    } else if (boss.attackIndex === 1 && boss.shotClock <= 0) {
-      const sweep = Math.sin(elapsed * 1.6) * .38;
-      for (let i = -3; i <= 3; i += 1) fire(Math.PI / 2 + sweep + i * .18, 150, 3.5);
-      boss.shotClock = .34;
-    } else if (boss.attackIndex === 2 && boss.shotClock <= 0) {
-      boss.angle -= .22;
-      for (let i = 0; i < 4; i += 1) fire(boss.angle + i * Math.PI / 2, 195, 4);
-      boss.shotClock = .24;
     }
-
-    const attackDuration = boss.attackIndex === 1 ? 3.2 : 3.8;
+    const attackDuration = 3.5 * difficultySettings[difficulty].cadence;
     if (boss.attackTime >= attackDuration) {
       boss.attacking = false;
-      boss.rest = boss.hp < boss.maxHp * .3 ? .8 : 1.3;
+      boss.rest = (boss.hp < boss.maxHp * .3 ? .8 : 1.3) * difficultySettings[difficulty].cadence / scale;
     }
   }
   function fireShot() {
@@ -466,7 +567,7 @@ export function mountDanmaku(root, language = "pt") {
     const prismCombo = synergyActive("prism");
     for (let i = 0; i < count; i += 1) {
       const angle = -Math.PI / 2 + (i - (count - 1) / 2) * .11;
-      const shot = { x: player.x, y: player.y - 9, vx: Math.cos(angle) * 560, vy: Math.sin(angle) * 560, r: focus ? 3.5 : 3, damage: shotDamage * (prismCombo ? 1.25 : 1), pierce: shotPierce + (prismCombo ? 1 : 0) };
+      const shot = { x: player.x, y: player.y - 9, vx: Math.cos(angle) * 560, vy: Math.sin(angle) * 560, r: focus ? 3.5 : 3, damage: shotDamage * (prismCombo ? 1.25 : 1), pierce: shotPierce + (prismCombo ? 1 : 0) + (hasRare("rift-core") ? 2 : 0) };
       shots.push(shot);
       if (hasRare("echo")) shots.push({ ...shot, delay: .14, damage: shot.damage * .55, pierce: 0 });
     }
@@ -479,11 +580,11 @@ export function mountDanmaku(root, language = "pt") {
   function defeatBoss() {
     const defeatedBoss = bossIndex;
     runBossesDefeated += 1;
-    if (bossLifeLosses === 0) unlockChallengeSkin(["astra-flawless", "kuro-flawless", "mira-flawless"][defeatedBoss]);
+    if (bossLifeLosses === 0 && defeatedBoss < 3) unlockChallengeSkin(["astra-flawless", "kuro-flawless", "mira-flawless"][defeatedBoss]);
     if (lives === 1) unlockChallengeSkin("one-life-boss");
     if (runBossesDefeated >= 3) unlockChallengeSkin("three-bosses");
     if (runBossesDefeated >= 5) unlockChallengeSkin("five-bosses");
-    score += 2200 + stage * 350; boss = null; stage += 1; stageTime = 0; enemyClock = 1; midboss = null; midbossSpawned = false; phase = "wave";
+    score += 2200 + stage * 350; if (hasRare("phoenix")) lives = Math.min(5, lives + 1); boss = null; stage += 1; stageTime = 0; enemyClock = 1; midboss = null; midbossSpawned = false; phase = "wave";
     delete root.dataset.bossTheme;
     bombs = Math.min(maxBombs, bombs + 1); bossClear = 2.4; bullets = []; sound("victory");
     for (let n = 0; n < 4; n += 1) essences.push({ x: W * (.25 + n * .16), y: H * .3, value: 2, life: 12, color: "#54f0ad" });
@@ -500,7 +601,7 @@ export function mountDanmaku(root, language = "pt") {
   function end() {
     if (mode === "over") return;
     mode = "over";
-    const finalScore = Math.floor(score);
+    const finalScore = Math.floor(score * scoreMultiplier());
     best = Math.max(best, finalScore); writeBest(best);
     root.classList.add("is-game-over");
     ui.hud.hidden = true; ui.start.hidden = true; ui.pause.hidden = true; ui.perks.hidden = true; ui.chest.hidden = true; ui.over.hidden = false;
@@ -512,7 +613,7 @@ export function mountDanmaku(root, language = "pt") {
     sound("gameover");
   }
   function hitPlayer() {
-    if (invuln > 0) return;
+    if (debugInvulnerable || invuln > 0) return;
     if (hasRare("aegis") && aegisCooldown <= 0) {
       aegisCooldown = 14; invuln = .45; sound("aegis");
       for (let n = 0; n < 12; n += 1) particles.push({ x: player.x, y: player.y, vx: (Math.random() - .5) * 150, vy: (Math.random() - .5) * 150, life: .4, color: "#75dcff" });
@@ -575,14 +676,14 @@ export function mountDanmaku(root, language = "pt") {
     player.vx += (targetVx - player.vx) * response; player.vy += (targetVy - player.vy) * response;
     player.x += player.vx * dt; player.y += player.vy * dt;
     player.x = Math.max(12, Math.min(W - 12, player.x)); player.y = Math.max(62, Math.min(H - 16, player.y));
-    shotClock -= dt; if (actionDown("danmaku", "fire", keys) && shotClock <= 0) { fireShot(); shotClock = Math.max(.045, (.115 - (shotDamage - 1) * .025) * (hasRare("overdrive") ? .75 : 1)); }
+    shotClock -= dt; if (actionDown("danmaku", "fire", keys) && shotClock <= 0) { fireShot(); shotClock = Math.max(.045, (.115 - (shotDamage - 1) * .025) * (hasRare("overdrive") ? .75 : 1) * (hasRare("afterburn") && Math.hypot(player.vx, player.vy) > 35 ? .85 : 1)); }
     if (!boss) {
       enemyClock -= dt;
-      if (stageTime < 27 && enemyClock <= 0) { spawnEnemyWave(); enemyClock = Math.max(.72, 1.55 - stage * .08); }
+      if (stageTime < 27 && enemyClock <= 0) { spawnEnemyWave(); enemyClock = Math.max(.45, 1.55 - stage * .08) * difficultySettings[difficulty].waves / threatScale(); }
       if (!midbossSpawned && stageTime >= 15) { spawnMidboss(); midbossSpawned = true; }
       if (midboss && stageTime > 19) {
         midboss.timer += dt; midboss.phase += dt; midboss.x = W / 2 + Math.sin(elapsed * .9) * W * .3;
-        if (midboss.timer >= Math.max(1.05, 2.1 - stage * .08)) {
+        if (midboss.timer >= Math.max(.55, 2.1 - stage * .08) * difficultySettings[difficulty].cadence / threatScale()) {
           midboss.timer = 0; const aim = Math.atan2(player.y - midboss.y, player.x - midboss.x);
           for (let n = -2; n <= 2; n += 1) bullet(midboss.x, midboss.y + 8, aim + n * .17, 120 + stage * 5, "#ffb366", 4);
         }
@@ -606,7 +707,7 @@ export function mountDanmaku(root, language = "pt") {
           const count = enemy.fireCount % 3 === 0 ? 8 : 3;
           for (let n = 0; n < count; n += 1) bullet(enemy.x, enemy.y, enemy.fireCount % 3 === 0 ? n * Math.PI * 2 / count + enemy.phase * .2 : aim + (n - 1) * .19, shotSpeed * .8, "#ffb866", 3.8);
         } else bullet(enemy.x, enemy.y + enemy.r, aim, shotSpeed, "#67dff0", enemy.kind === 2 ? 4 : 3.2);
-        enemy.shotClock = Math.max(enemy.kind === 4 ? 1.4 : .9, (enemy.kind === 1 ? 2.3 : 2.7) - stage * .1) + Math.random() * .65;
+        enemy.shotClock = Math.max(.42, Math.max(enemy.kind === 4 ? 1.4 : .9, (enemy.kind === 1 ? 2.3 : 2.7) - stage * .1) * difficultySettings[difficulty].cadence / threatScale()) + Math.random() * .65 * difficultySettings[difficulty].cadence / threatScale();
       }
       if (Math.hypot(enemy.x - player.x, enemy.y - player.y) < enemy.r + player.r && invuln <= 0) { hitPlayer(); enemy.y = H + 30; }
       if (enemy.y > H + 25) enemies.splice(i, 1);
@@ -634,14 +735,14 @@ export function mountDanmaku(root, language = "pt") {
       const essence = essences[i]; essence.life -= dt;
   const dx = player.x - essence.x, dy = player.y - essence.y;
   const distance = Math.hypot(dx, dy);
-  const pullRange = Math.min(Math.hypot(W, H), 420 + magnet * 5);
+  const pullRange = Math.min(Math.hypot(W, H), (420 + magnet * 5) * (hasRare("scavenger") ? 1.8 : 1));
   if (distance < pullRange && distance > 0) {
-    const pullSpeed = 250 + magnet * 1.5;
+    const pullSpeed = (250 + magnet * 1.5) * (hasRare("scavenger") ? 1.25 : 1);
     const step = Math.min(Math.max(0, distance - 14), pullSpeed * dt);
     essence.x += (dx / distance) * step;
     essence.y += (dy / distance) * step;
   }
-  if (Math.hypot(essence.x - player.x, essence.y - player.y) < 16) { xp += essence.value; score += 25 * essence.value; essences.splice(i, 1); if (xp >= nextXp) { showPerks(); break; } }
+  if (Math.hypot(essence.x - player.x, essence.y - player.y) < 16) { xp += essence.value * (hasRare("scavenger") ? 1.5 : 1); score += 25 * essence.value; essences.splice(i, 1); if (xp >= nextXp) { showPerks(); break; } }
       else if (essence.life <= 0 || essence.y > H + 10) essences.splice(i, 1);
     }
     if (mode !== "playing") { updateHud(); return; }
@@ -824,6 +925,11 @@ export function mountDanmaku(root, language = "pt") {
     try {
       if (mode === "playing") update(dt);
       updateControlMonitor(); draw();
+      if (debugEnabled && now - debugLastSample >= 250) {
+        debugFps = Math.round(debugFrameCount * 1000 / Math.max(1, now - debugLastSample)); debugFrameCount = 0; debugLastSample = now;
+        ui.debugData.textContent = `MODE ${mode.toUpperCase()}  ·  FPS ${debugFps}\nSTAGE ${stage}  ·  PHASE ${phase}\nSCORE ${Math.floor(score)}  ·  THREAT ${threatScale().toFixed(2)}x\nBOSS ${boss ? bossIndex + 1 : "—"}  ·  ENEMIES ${enemies.length}\nBULLETS ${bullets.length}  ·  SHOTS ${shots.length}\nLIVES ${lives}  ·  XP ${Math.floor(xp)}/${nextXp}`;
+      }
+      if (debugEnabled) debugFrameCount += 1;
     } catch (error) {
       console.error("DANMAKU frame error:", error);
       if (lives <= 0) { try { end(); } catch (endError) { console.error("DANMAKU game-over error:", endError); } }
@@ -832,6 +938,10 @@ export function mountDanmaku(root, language = "pt") {
   function keydown(e) {
     const key = e.key.toLowerCase();
     if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(key)) e.preventDefault();
+    if (!e.repeat) {
+      debugInput.push(key); debugInput = debugInput.slice(-debugCode.length);
+      if (debugInput.length === debugCode.length && debugInput.every((value, index) => value === debugCode[index])) setDebugOpen(!debugEnabled);
+    }
     if (mode === "perk") {
       if (["arrowleft", "arrowup", "w", "a"].includes(key)) movePerkSelection(-1);
       else if (["arrowright", "arrowdown", "s", "d"].includes(key)) movePerkSelection(1);
@@ -857,12 +967,17 @@ export function mountDanmaku(root, language = "pt") {
   function pauseForKeybinds() { resumeAfterKeybind = mode === "playing"; if (resumeAfterKeybind) { mode = "pause"; keys.clear(); focus = false; ui.pause.hidden = true; } }
   function resumeAfterKeybinds() { if (resumeAfterKeybind && mode === "pause") mode = "playing"; resumeAfterKeybind = false; }
   renderSkins();
+  root.querySelector("[data-debug-skin]").value = selectedSkinId;
+  root.querySelector("[data-debug-difficulty]").value = difficulty;
   skinList.addEventListener("click", (event) => { const button = event.target.closest("[data-dm-skin]"); if (button && !button.disabled) equipSkin(button.dataset.dmSkin); });
+  root.querySelectorAll("[data-dm-difficulty]").forEach((button) => button.addEventListener("click", () => { difficulty = button.dataset.dmDifficulty; root.querySelectorAll("[data-dm-difficulty]").forEach((item) => { const selected = item === button; item.setAttribute("aria-pressed", String(selected)); item.classList.toggle("is-selected", selected); }); }));
   root.querySelector("[data-dm-start-button]").addEventListener("click", start);
   root.querySelector("[data-dm-retry]").addEventListener("click", start);
   root.querySelector("[data-dm-resume]").addEventListener("click", () => { mode = "playing"; ui.pause.hidden = true; });
   root.querySelector("[data-dm-pause]").addEventListener("click", () => { if (mode === "playing") { mode = "pause"; ui.pause.hidden = false; } });
   root.querySelector("[data-dm-menu]").addEventListener("click", () => { mode = "menu"; root.classList.remove("is-game-over"); ui.over.hidden = true; ui.hud.hidden = true; ui.start.hidden = false; bullets = []; shots = []; });
+  root.querySelector("[data-debug-close]").addEventListener("click", () => setDebugOpen(false));
+  root.querySelectorAll("[data-debug-action]").forEach((button) => button.addEventListener("click", () => runDebugAction(button.dataset.debugAction)));
   window.addEventListener("keydown", monitorKeyDown); window.addEventListener("keyup", monitorKeyUp); window.addEventListener("keydown", keydown); window.addEventListener("keyup", keyup); window.addEventListener("arcade-keybind-open", pauseForKeybinds); window.addEventListener("arcade-keybind-close", resumeAfterKeybinds); window.addEventListener("blur", () => { keys.clear(); monitorKeys.clear(); focus = false; });
   const observer = new ResizeObserver(resize); observer.observe(field); resize(); frame = requestAnimationFrame(loop);
   return () => { cancelAnimationFrame(frame); if (chestSpinInterval) clearInterval(chestSpinInterval); if (skinToastTimer) clearTimeout(skinToastTimer); observer.disconnect(); window.removeEventListener("keydown", monitorKeyDown); window.removeEventListener("keyup", monitorKeyUp); window.removeEventListener("keydown", keydown); window.removeEventListener("keyup", keyup); window.removeEventListener("arcade-keybind-open", pauseForKeybinds); window.removeEventListener("arcade-keybind-close", resumeAfterKeybinds); };

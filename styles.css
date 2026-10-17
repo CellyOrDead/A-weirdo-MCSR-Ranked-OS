@@ -920,6 +920,9 @@ th { height:38px; }
 .danmaku-card { width:min(400px,100%); max-height:94%; overflow:auto; padding:24px; border:1px solid #594c70; border-radius:11px; background:#171628ed; box-shadow:0 20px 60px #0009; text-align:center; }
 .danmaku-card h3 { margin:9px 0; color:#f5efff; font:700 23px var(--display); }
 .danmaku-card p { margin:0; color:#aaa2bf; font-size:10px; line-height:1.6; }
+.danmaku-difficulty { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin:14px 0 4px; }
+.danmaku-difficulty button { min-height:32px; padding:5px 3px; border:1px solid #ffffff20; border-radius:5px; color:#bfb7cb; background:#090b13; font:700 8px var(--mono); cursor:pointer; }
+.danmaku-difficulty button:hover,.danmaku-difficulty button:focus-visible,.danmaku-difficulty button.is-selected { border-color:#c59cff; color:#f2e5ff; background:#9d65ce2b; box-shadow:inset 0 0 0 1px #c59cff30; outline:none; }
 .danmaku-boss-roster { display:grid; gap:6px; margin:18px 0; text-align:left; }
 .danmaku-boss-roster span { display:flex; align-items:center; gap:9px; padding:8px; border:1px solid #ffffff14; border-radius:6px; color:#ded6f0; font-size:9px; }
 .danmaku-boss-roster i { color:#c59cff; font:700 8px var(--mono); }
@@ -970,6 +973,18 @@ th { height:38px; }
 .danmaku-game[data-boss-theme] .danmaku-boss-hud small,.danmaku-game[data-boss-theme] .danmaku-toast { color:var(--dm-boss-accent); }
 .danmaku-toast { position:absolute; z-index:2; top:40%; width:100%; color:#fff0c3; font:700 10px var(--mono); letter-spacing:.16em; text-align:center; text-shadow:0 0 16px #ffe899; }
 .danmaku-toast[hidden] { display:none; }
+.danmaku-debug-panel { position:absolute; z-index:9; top:8px; left:8px; width:min(280px,calc(100% - 16px)); max-height:calc(100% - 16px); overflow:auto; padding:9px; border:1px solid #76e6c777; border-radius:5px; color:#b9ffe7; background:#071411f2; box-shadow:0 5px 18px #0009; text-align:left; }
+.danmaku-debug-panel[hidden] { display:none; }
+.danmaku-debug-panel > header { display:flex; align-items:center; justify-content:space-between; color:#8df2cb; font:700 8px var(--mono); letter-spacing:.12em; }
+.danmaku-debug-panel > header button { width:24px; height:24px; border:1px solid #76e6c755; border-radius:3px; color:#b9ffe7; background:#0e2922; cursor:pointer; }
+.danmaku-debug-panel pre { margin:7px 0; padding-bottom:7px; border-bottom:1px solid #76e6c733; color:#c9d8d5; font:7px/1.6 var(--mono); white-space:pre-wrap; }
+.danmaku-debug-controls { display:grid; gap:5px; }
+.danmaku-debug-controls label { display:grid; gap:3px; color:#a8c5ba; font:7px var(--mono); }
+.danmaku-debug-controls select,.danmaku-debug-controls input { width:100%; min-height:25px; padding:4px 6px; border:1px solid #ffffff25; border-radius:3px; color:#e4fff3; background:#101b19; font:8px var(--mono); }
+.danmaku-debug-controls > button,.danmaku-debug-utilities button { min-height:26px; padding:4px 6px; border:1px solid #5bbd9b66; border-radius:3px; color:#c8f5e2; background:#143127; font:700 7px var(--mono); cursor:pointer; }
+.danmaku-debug-controls > button:hover,.danmaku-debug-utilities button:hover { border-color:#89e9c3; background:#1c4938; }
+.danmaku-debug-utilities { display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:3px; }
+.danmaku-debug-controls > small { color:#819d91; font:6px/1.5 var(--mono); }
 .danmaku-perk-card { width:min(460px,100%); }
 .danmaku-perk-list { display:grid; gap:7px; margin-top:17px; text-align:left; }
 .danmaku-perk { min-height:62px; display:flex; align-items:center; gap:11px; padding:9px 11px; border:1px solid #ffffff20; border-radius:7px; color:#eee8fa; background:#ffffff08; text-align:left; cursor:pointer; transition:border-color .14s,background .14s,transform .14s; }
