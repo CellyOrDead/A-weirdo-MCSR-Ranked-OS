@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: https://crafatar.com https://skinrender.dev; connect-src 'none';"
+    />
+    <title>MCSR Rank</title>
+    <link rel="icon" type="image/png" href="./assets/branding/app-icon.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="MCSR Rank">
+          <img class="brand-mark" src="./assets/branding/mcsr-ranked-logo.png" alt="" />
+          <span>MCSR<span class="brand-light">RANK</span><small>RANKED COMPANION</small></span>
+        </a>
+
+        <div class="nav-label" data-i18n="menu"></div>
+        <nav class="main-nav" aria-label="Menu principal">
+          <button class="nav-item" data-view="welcome"><span class="nav-icon">H</span><span data-i18n="home"></span></button>
+          <button class="nav-item active" data-view="rankings"><span class="nav-icon">▤</span><span data-i18n="rankings"></span></button>
+          <button class="nav-item" data-view="profile"><span class="nav-icon">◉</span><span data-i18n="player"></span></button>
+          <button class="nav-item" data-view="compare"><span class="nav-icon">⇄</span><span data-i18n="compare"></span></button>
+          <button class="nav-item" data-view="history"><span class="nav-icon">⌁</span><span data-i18n="history"></span></button>
+          <button class="nav-item" data-view="watchlist"><span class="nav-icon">☆</span><span data-i18n="watchlist"></span><span id="watch-count" class="nav-count"></span></button>
+          <button class="nav-item" data-view="tournaments"><span class="nav-icon">♜</span><span data-i18n="tournaments"></span></button>
+          <button class="nav-item" data-view="game"><span class="nav-icon">✦</span><span data-i18n="game"></span></button>
+          <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span><span data-i18n="settings"></span></button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+        <div class="sidebar-season">
+          <span class="live-dot"></span>
+          <span data-i18n="officialApi"></span>
+          <span class="api-version">API</span>
+        </div>
+        <div class="sidebar-foot">
+          <span class="pixel-cube">▧</span>
+          <span><strong>MCSR RANK</strong><small data-i18n="desktopApp"></small></span>
+          <span class="version">v1.0</span>
+        </div>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <div class="heading">
+            <div class="breadcrumbs"><span>MCSR RANK</span><span class="crumb-slash">/</span><span id="crumb-current"></span></div>
+            <h1 id="view-title"></h1>
+            <p id="view-description"></p>
+          </div>
+          <div class="top-actions">
+            <span class="connection"><span class="live-dot"></span><span data-i18n="liveData"></span></span>
+            <select id="language-select" class="language-select" aria-label="Language">
+              <option value="pt">PT-BR</option>
+              <option value="en">EN</option>
+              <option value="es">ES</option>
+            </select>
+            <button id="refresh-button" class="icon-button" title="Atualizar dados" aria-label="Atualizar dados">↻</button>
+          </div>
+        </header>
+
+        <main id="app" tabindex="-1" aria-live="polite" aria-busy="false"></main>
+        <footer class="workspace-footer">
+          <span data-i18n="poweredBy"></span>
+          <a href="https://docs.mcsrranked.com/" target="_blank" rel="noreferrer">MCSR Ranked API ↗</a>
+          <span class="footer-spacer"></span>
+          <span data-i18n="localDataNote"></span>
+        </footer>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="match-dialog" class="match-dialog"></dialog>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

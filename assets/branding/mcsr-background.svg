@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="824" viewBox="0 0 960 824" fill="none">
+  <defs>
+    <filter id="ship-glow" x="340" y="190" width="640" height="650" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#ff3939" flood-opacity=".22" />
+    </filter>
+  </defs>
+  <image href="./mcsr-ranked-logo.png" x="-115" y="-170" width="1050" height="1050" preserveAspectRatio="none" image-rendering="pixelated" />
+  <image href="./danmaku-ship.png" x="408" y="248" width="520" height="520" preserveAspectRatio="none" image-rendering="pixelated" filter="url(#ship-glow)" />
+</svg>
